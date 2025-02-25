@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Clix Merchant Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1A237E;   /* Deep trust blue */
+            --secondary: #00C853; /* Growth green */
+            --accent: #FFD600;    /* Kenyan sunset yellow */
+            --text-dark: #212121;
+            --text-light: #757575;
+            --sidebar-width: 250px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .nav-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* Tabs */
+        .tab-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-button {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .tab-button.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode */
+        .dark-mode {
+            background: #2d2d2d;
+            color: white;
+        }
+
+        .dark-mode .card {
+            background: #3d3d3d;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar">
+    <!-- Home Link Added -->
+    <div class="nav-item" onclick="window.location.href = '/panel/dashboard.html';">
+        <i class="fas fa-home"></i> Home
+    </div>
+
+    <div class="nav-item" onclick="showTab('account')">
+        <i class="fas fa-user"></i> Account
+    </div>
+    <div class="nav-item" onclick="showTab('payments')">
+        <i class="fas fa-money-bill-wave"></i> Payments
+    </div>
+    <div class="nav-item" onclick="showTab('security')">
+        <i class="fas fa-shield-alt"></i> Security
+    </div>
+    <div class="nav-item" onclick="showTab('api')">
+        <i class="fas fa-code"></i> API & Integrations
+    </div>
+</div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Account Settings -->
+        <div id="account" class="tab-content active">
+            <h2>Account Settings</h2>
+            <div class="form-group">
+                <label>Business Name</label>
+                <input type="text" value="My Business" id="businessName">
+            </div>
+            <div class="form-group">
+                <label>Contact Info</label>
+                <input type="email" value="info@mybusiness.com" id="contactEmail">
+            </div>
+            <div class="form-group">
+                <label>Business Logo</label>
+                <input type="file" id="businessLogo">
+            </div>
+            <div class="form-group">
+                <label>Preferred Currency</label>
+                <select id="currency">
+                    <option value="KES" selected>KES (Kenyan Shilling)</option>
+                    <option value="USD">USD (US Dollar)</option>
+                </select>
+            </div>
+            <button class="btn" onclick="saveAccountSettings()">Save Changes</button>
+        </div>
+
+        <!-- Payment Settings -->
+        <div id="payments" class="tab-content">
+            <h2>Payment Settings</h2>
+            <div class="form-group">
+                <label>Primary Till Number</label>
+                <input type="text" value="123456" id="primaryTill">
+            </div>
+            <div class="form-group">
+                <label>Auto-Switch Tills</label>
+                <select id="autoSwitch">
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Transaction Limits</label>
+                <input type="number" placeholder="Minimum Amount" id="minAmount">
+                <input type="number" placeholder="Maximum Amount" id="maxAmount">
+            </div>
+            <button class="btn" onclick="savePaymentSettings()">Save Changes</button>
+        </div>
+
+        <!-- Security Settings -->
+        <div id="security" class="tab-content">
+            <h2>Security Settings</h2>
+            <div class="form-group">
+                <label>Change Password</label>
+                <input type="password" placeholder="Old Password" id="oldPassword">
+                <input type="password" placeholder="New Password" id="newPassword">
+            </div>
+            <div class="form-group">
+                <label>Enable 2FA</label>
+                <select id="twoFactorAuth">
+                    <option value="enabled">Enabled</option>
+                    <option value="disabled">Disabled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Transaction PIN</label>
+                <input type="password" placeholder="Set Transaction PIN" id="transactionPin">
+            </div>
+            <button class="btn" onclick="saveSecuritySettings()">Save Changes</button>
+        </div>
+
+        <!-- API & Integrations -->
+        <div id="api" class="tab-content">
+            <h2>API & Integrations</h2>
+            <div class="form-group">
+                <label>API Key</label>
+                <input type="text" value="sk_test_1234567890abcdef" readonly id="apiKey">
+                <button class="btn" onclick="copyApiKey()">Copy API Key</button>
+            </div>
+            <div class="form-group">
+                <label>Webhook URL</label>
+                <input type="url" placeholder="https://yourwebsite.com/webhook" id="webhookUrl">
+            </div>
+            <div class="form-group">
+                <label>Test API Integration</label>
+                <button class="btn" onclick="testApi()">Test API</button>
+            </div>
+            <button class="btn" onclick="saveApiSettings()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Save Functions
+        function saveAccountSettings() {
+            alert('Account settings saved!');
+        }
+
+        function savePaymentSettings() {
+            alert('Payment settings saved!');
+        }
+
+        function saveSecuritySettings() {
+            alert('Security settings saved!');
+        }
+
+        function saveApiSettings() {
+            alert('API settings saved!');
+        }
+
+        // Copy API Key
+        function copyApiKey() {
+            const apiKey = document.getElementById('apiKey').value;
+            navigator.clipboard.writeText(apiKey).then(() => {
+                alert('API key copied to clipboard!');
+            });
+        }
+
+        // Test API
+        function testApi() {
+            alert('Testing API integration...');
+        }
+    </script>
+</body>
+</html>
